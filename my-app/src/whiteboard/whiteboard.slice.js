@@ -7,13 +7,13 @@ const initialState = {
 const whiteboardSlice = createSlice({
   name: 'whiteboard',
   initialState,
-  reducer: {
+  reducers: {
     setToolType: (state, action) => {
       state.tool = action.payload;
     },
 
   }
 });
-export const {setToolType} = whiteboardSlice;
+export const {setToolType} = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;
