@@ -1,17 +1,15 @@
-import {configureStore} from '@reduxjs/toolkit';
-import whiteboardReducer from '../whiteboard/whiteboard.slice';
-
+import { configureStore } from "@reduxjs/toolkit";
+import whiteboardSliceReducer from "../whiteboard/whiteboard.slice";
 
 export const store = configureStore({
   reducer: {
-    whiteboard:whiteboardReducer,
+    whiteboard: whiteboardSliceReducer,
   },
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({
-      serializableCheck: {
-        ignoreActions: ['whiteboard/setElements'],
-        ignorePaths: ['whiteboard/elements'],
-      }
-    });
-  },
+  middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoreActions: ["whiteboard/setElements"],
+          ignoredPaths: ["whiteboard.elements"],
+        },
+      }),
 });

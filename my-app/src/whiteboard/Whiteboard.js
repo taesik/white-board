@@ -105,7 +105,7 @@ const Whiteboard = () => {
           x2:clientX,
           y2:clientY,
           type:elements[index].type,
-        },elements,)
+        },elements)
       }
     }
   }
