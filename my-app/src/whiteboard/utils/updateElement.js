@@ -1,16 +1,19 @@
-import {toolTypes} from "../../constants";
-import {createElement} from "./createElement";
-import {store} from "../../store/store";
-import {setElements} from "../whiteboard.slice";
-import {emitElementUpdate} from "../../socketConn/socketConn";
+import { createElement } from ".";
+import { toolTypes } from "../../constants";
+import { emitElementUpdate } from "../../socketConn/socketConn";
+import { store } from "../../store/store";
+import { setElements } from "../whiteboard.slice";
 
-export const updateElement = ({id, x1, y1, x2, y2, type,index},elements) => {
+export const updateElement = (
+    { id, x1, x2, y1, y2, type, index },
+    elements
+) => {
   const elementsCopy = [...elements];
 
-  switch(type) {
+  switch (type) {
     case toolTypes.LINE:
     case toolTypes.RECTANGLE:
-      const updateElement = createElement({
+      const updatedElement = createElement({
         id,
         x1,
         y1,
@@ -19,29 +22,31 @@ export const updateElement = ({id, x1, y1, x2, y2, type,index},elements) => {
         toolType: type,
       });
 
-      elementsCopy[index] = updateElement;
+      elementsCopy[index] = updatedElement;
 
       store.dispatch(setElements(elementsCopy));
 
-      emitElementUpdate(updateElement);
+      emitElementUpdate(updatedElement);
       break;
     case toolTypes.PENCIL:
       elementsCopy[index] = {
         ...elementsCopy[index],
-        points:[
-            ...elementsCopy[index].points,
+        points: [
+          ...elementsCopy[index].points,
           {
-            x:x2,
-            y:y2,
-          }
-        ]
-      }
+            x: x2,
+            y: y2,
+          },
+        ],
+      };
+
       const updatedPencilElement = elementsCopy[index];
 
-      store.dispatch(setElements(elementsCopy[index]));
+      store.dispatch(setElements(elementsCopy));
 
       emitElementUpdate(updatedPencilElement);
+      break;
     default:
-      throw new Error( 'sth went wrong when updating element')
+      throw new Error("Something went wrong when updating element");
   }
-}
+};
