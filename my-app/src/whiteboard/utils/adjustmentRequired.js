@@ -1,5 +1,5 @@
 import {toolTypes} from "../../constants";
 
 export const adjustmentRequired =(type) => (
-  [toolTypes.RECTANGLE].includes(type)
+  [toolTypes.RECTANGLE,toolTypes.LINE].includes(type)
 )
