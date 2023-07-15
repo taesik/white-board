@@ -47,6 +47,7 @@ export const updateElement = (
       emitElementUpdate(updatedPencilElement);
       break;
     default:
-      throw new Error("Something went wrong when updating element");
+      // throw new Error("Something went wrong when updating element");
+      console.log('')
   }
 };

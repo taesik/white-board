@@ -8,11 +8,7 @@ import { updateElement as updateElementInStore} from './whiteboard.slice'
 import {v4 as uuid} from 'uuid';
 import {adjustmentRequired} from "./utils";
 
-let selectedElement;
 
-const setSelectedElement = (el) =>{
-  selectedElement = el;
-}
 
 const Whiteboard = () => {
   const dispatch = useDispatch();
@@ -20,7 +16,7 @@ const Whiteboard = () => {
   const toolType = useSelector(state=>state.whiteboard.tool);
   const elements = useSelector((state) => state.whiteboard.elements);
   const [action, setAction] = useState(null);
-
+  const [selectedElement, setSelectedElement] = useState(null);
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -41,32 +37,35 @@ const Whiteboard = () => {
 
   function handleMouseDown (event) {
     const { clientX, clientY } = event;
-    console.log(toolType);
 
-    if (toolType === toolTypes.RECTANGLE ||
-        toolType === toolTypes.LINE ||
-        toolType === toolTypes.PENCIL
-    ) {
-      setAction(actions.DRAWING);
+    const element = createElement({
+      x1: clientX,
+      y1: clientY,
+      x2: clientX,
+      y2: clientY,
+      toolType,
+      id: uuid(),
+    });
 
-      const element = createElement({
-        x1: clientX,
-        y1: clientY,
-        x2: clientX,
-        y2: clientY,
-        toolType,
-        id: uuid(),
-      });
+    switch (toolType) {
+      case toolTypes.RECTANGLE:
+      case toolTypes.LINE:
+      case toolTypes.PENCIL:
 
-      setSelectedElement(element);
-
-      dispatch(updateElementInStore(element));
+        setAction(actions.DRAWING);
+        break;
+      case toolTypes.TEXT:
+        setAction(actions.WRITING);
+        break;
     }
+    dispatch(updateElementInStore(element));
+
+
   }
 
 
   function handleMouseUp() {
-    const selectedElementIndex = elements.findIndex(el => el.id === selectedElement.id);
+    const selectedElementIndex = elements?.findIndex(el => el.id === selectedElement.id);
 
     if (selectedElementIndex !== -1) {
       if (action === actions.DRAWING) {
