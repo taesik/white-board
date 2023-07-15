@@ -13,6 +13,7 @@ import {adjustmentRequired} from "./utils";
 const Whiteboard = () => {
   const dispatch = useDispatch();
   const canvasRef = useRef();
+  const textAreaRef = useRef();
   const toolType = useSelector(state=>state.whiteboard.tool);
   const elements = useSelector((state) => state.whiteboard.elements);
   const [action, setAction] = useState(null);
@@ -111,9 +112,32 @@ const Whiteboard = () => {
       }
     }
   }
+  function handleTextareaBlur(e){
+
+  }
   return (
       <div>
         <Menu/>
+        {action === actions.WRITING
+            ? <textarea
+                style={{
+                  position: 'absolute',
+                  top: selectedElement.y1 -3,
+                  left: selectedElement.x1,
+                  font: '24px sans-serif',
+                  margin: 0,
+                  padding: 0,
+                  border: 0,
+                  outline: 0,
+                  resize: 'auto',
+                  overflow: 'hidden',
+                  whiteSpace:'pre',
+                  background: 'transparent',
+                }}
+                onBlur={handleTextareaBlur}
+                ref={textAreaRef}/>
+            :null
+        }
         <canvas
             onMouseUp={handleMouseUp}
             onMouseDown={(e)=>handleMouseDown(e)}
