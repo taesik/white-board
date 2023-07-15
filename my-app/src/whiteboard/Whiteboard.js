@@ -1,53 +1,94 @@
 import React, {useLayoutEffect, useRef, useState} from 'react';
 import Menu from "./Menu";
 import rough from 'roughjs/bundled/rough.esm';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {actions, toolTypes} from "../constants";
-import {createElement} from "./utils";
+import {createElement, drawElement, updateElement} from "./utils";
+import { updateElement as updateElementInStore} from './whiteboard.slice'
 import {v4 as uuid} from 'uuid';
+
+let selectedElement;
+
+const setSelectedElement = (el) =>{
+  selectedElement = el;
+}
+
 const Whiteboard = () => {
+  const dispatch = useDispatch();
   const canvasRef = useRef();
-  const toolType = useSelector(state=>state.whiteboard.tool)
+  const toolType = useSelector(state=>state.whiteboard.tool);
+  const elements = useSelector((state) => state.whiteboard.elements);
   const [action, setAction] = useState(null);
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
 
-    const rc = rough.canvas(canvas);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const roughCanvas = rough.canvas(canvas);
 
 
-    rc.rectangle(10,10,200,200);
+
+    elements.forEach(element=>{
+      drawElement({roughCanvas,context:ctx, element});
+    })
     return () => {
     }
-  },[]);
+  },[elements]);
 
-  function handleMouseDown (e) {
-    const { clientX, clientY} = e;
+  function handleMouseDown (event) {
+    const { clientX, clientY } = event;
+    console.log(toolType);
 
-
-    if (toolType === toolTypes.RECTANGLE){
+    if (toolType === toolTypes.RECTANGLE) {
       setAction(actions.DRAWING);
     }
 
+    const element = createElement({
+      x1: clientX,
+      y1: clientY,
+      x2: clientX,
+      y2: clientY,
+      toolType,
+      id: uuid(),
+    });
 
-    const element = createElement(
-        {
-          x1:clientX,
-          y1:clientY,
-          x2:clientX,
-          y2:clientY,
-          toolType,
-          id:uuid(),
-        }
-    );
-    console.log(element);
+    setSelectedElement(element);
 
+    dispatch(updateElementInStore(element));
   }
 
+  function handleMouseUp() {
+    setAction(null);
+    setSelectedElement(null);
+  }
+
+  function handleMouseMove(e) {
+    const { clientX, clientY} = e;
+
+    if (action === actions.DRAWING) {
+      const index = elements.findIndex(el => el.id === selectedElement.id);
+      if (index !== -1){
+        updateElement({
+          index,
+          id:elements[index].id,
+          x1:elements[index].x1,
+          y1:elements[index].y1,
+          x2:clientX,
+          y2:clientY,
+          type:elements[index].type,
+        },elements,)
+      }
+    }
+  }
   return (
       <div>
         <Menu/>
         <canvas
+            onMouseUp={handleMouseUp}
             onMouseDown={(e)=>handleMouseDown(e)}
+            onMouseMove={(e)=>handleMouseMove(e)}
             ref={canvasRef} width={window.innerWidth}
                 height={window.innerHeight}/>
       </div>
