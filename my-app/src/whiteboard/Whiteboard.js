@@ -43,7 +43,10 @@ const Whiteboard = () => {
     const { clientX, clientY } = event;
     console.log(toolType);
 
-    if (toolType === toolTypes.RECTANGLE || toolType === toolTypes.LINE) {
+    if (toolType === toolTypes.RECTANGLE ||
+        toolType === toolTypes.LINE ||
+        toolType === toolTypes.PENCIL
+    ) {
       setAction(actions.DRAWING);
 
       const element = createElement({

@@ -27,6 +27,11 @@ io.on('connection', (socket)=>{
 
     socket.broadcast.emit('element-update',elementData);
   });
+  socket.on('whiteboard-clear',()=>{
+    elements = [];
+
+    socket.broadcast.emit('whiteboard-clear');
+  })
 });
 app.get('/',(req,res)=>{
   res.send('Hello server is working');

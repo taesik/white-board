@@ -1,17 +1,25 @@
 import React from 'react';
 import rectangleIcon from '../resources/icons/rectangle.svg'
 import lineIcon from '../resources/icons/line.svg'
+import rubberIcon from '../resources/icons/rubber.svg'
+import pencilIcon from '../resources/icons/pencil.svg'
 import {toolTypes} from "../constants";
 import {useDispatch, useSelector} from "react-redux";
-import {setToolType} from "./whiteboard.slice";
-const IconButton = ({src,type}) =>{
+import {setElements, setToolType} from "./whiteboard.slice";
+import {emitClearWhiteboard} from "../socketConn/socketConn";
+const IconButton = ({src,type, isRubber}) =>{
   const dispatch = useDispatch();
   const selectedToolType = useSelector(state=> state.whiteboard.tool);
   const handleToolChange = () =>{
     dispatch(setToolType(type))
   }
+  const handleClearCanvas = () =>{
+    dispatch(setElements([]));
 
-  return <button onClick={handleToolChange} className={selectedToolType === type
+    emitClearWhiteboard();
+  }
+
+  return <button onClick={isRubber ? handleClearCanvas : handleToolChange} className={selectedToolType === type
       ? 'menu_button_active'
       : 'menu_button' }>
     <img src={src} alt="" width={'80%'} height={'80%'} />
@@ -23,6 +31,8 @@ const Menu = () => {
       <div className={'menu_container'}>
         <IconButton src={rectangleIcon} type={toolTypes.RECTANGLE}/>
         <IconButton src={lineIcon} type={toolTypes.LINE}/>
+        <IconButton src={rubberIcon}  isRubber={true}/>
+        <IconButton src={pencilIcon} type={toolTypes.PENCIL} />
       </div>
   );
 };
