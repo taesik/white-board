@@ -12,10 +12,13 @@ import {adjustmentRequired} from "./utils";
 
 const Whiteboard = () => {
   const dispatch = useDispatch();
+
   const canvasRef = useRef();
   const textAreaRef = useRef();
+
   const toolType = useSelector(state=>state.whiteboard.tool);
   const elements = useSelector((state) => state.whiteboard.elements);
+
   const [action, setAction] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   useLayoutEffect(() => {
@@ -39,6 +42,10 @@ const Whiteboard = () => {
   function handleMouseDown (event) {
     const { clientX, clientY } = event;
 
+    if (selectedElement && action === actions.WRITING) {
+      return;
+    }
+
     const element = createElement({
       x1: clientX,
       y1: clientY,
@@ -51,17 +58,19 @@ const Whiteboard = () => {
     switch (toolType) {
       case toolTypes.RECTANGLE:
       case toolTypes.LINE:
-      case toolTypes.PENCIL:
-
+      case toolTypes.PENCIL: {
         setAction(actions.DRAWING);
         break;
-      case toolTypes.TEXT:
+      }
+      case toolTypes.TEXT: {
         setAction(actions.WRITING);
         break;
+      }
     }
+
+    setSelectedElement(element);
+
     dispatch(updateElementInStore(element));
-
-
   }
 
 
@@ -113,7 +122,19 @@ const Whiteboard = () => {
     }
   }
   function handleTextareaBlur(e){
+    const { id, x1, y1, type } = selectedElement;
 
+    const index = elements.findIndex((el) => el.id === selectedElement.id);
+
+    if (index !== -1) {
+      updateElement(
+          { id, x1, y1, type, text: e.target.value, index },
+          elements
+      );
+
+      setAction(null);
+      setSelectedElement(null);
+    }
   }
   return (
       <div>
