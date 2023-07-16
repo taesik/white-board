@@ -8,6 +8,7 @@ import {toolTypes} from "../constants";
 import {useDispatch, useSelector} from "react-redux";
 import {setElements, setToolType} from "./whiteboard.slice";
 import {emitClearWhiteboard} from "../socketConn/socketConn";
+import selectionIcon from '../resources/icons/selection.svg';
 const IconButton = ({src,type, isRubber}) =>{
   const dispatch = useDispatch();
   const selectedToolType = useSelector(state=> state.whiteboard.tool);
@@ -35,6 +36,8 @@ const Menu = () => {
         <IconButton src={rubberIcon}  isRubber={true}/>
         <IconButton src={pencilIcon} type={toolTypes.PENCIL} />
         <IconButton src={textIcon} type={toolTypes.TEXT} />
+        <IconButton src={selectionIcon} type={toolTypes.SELECTION} />
+
       </div>
   );
 };

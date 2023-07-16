@@ -4,3 +4,6 @@ export {drawElement} from './drawElement';
 export {adjustmentRequired} from './adjustmentRequired';
 export {adjustElementCoordinates} from './adjustElementCoordinates';
 export {getSvgPathFromStroke} from './getSvgPathFromStroke';
+export {getCursorForPosition} from './getCursorForPosition';
+export {getResizedCoordinates} from './getResizedCoordinates';
+export {getElementAtPosition} from './getElementAtPosition';

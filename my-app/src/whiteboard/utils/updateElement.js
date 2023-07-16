@@ -4,8 +4,27 @@ import { emitElementUpdate } from "../../socketConn/socketConn";
 import { store } from "../../store/store";
 import { setElements } from "../whiteboard.slice";
 
+export const updatePencilElementWhenMoving = (
+    { index, newPoints },
+    elements
+) => {
+  const elementsCopy = [...elements];
+
+  elementsCopy[index] = {
+    ...elementsCopy[index],
+    points: newPoints,
+  };
+
+  console.log("updating pencil element");
+
+  const updatedPencilElement = elementsCopy[index];
+
+  store.dispatch(setElements(elementsCopy));
+  emitElementUpdate(updatedPencilElement);
+};
+
 export const updateElement = (
-    { id, x1, x2, y1, y2, type, index ,text},
+    { id, x1, x2, y1, y2, type, index, text },
     elements
 ) => {
   const elementsCopy = [...elements];
@@ -73,7 +92,6 @@ export const updateElement = (
       emitElementUpdate(updatedTextElement);
       break;
     default:
-      // throw new Error("Something went wrong when updating element");
-      console.log('')
+      throw new Error("Something went wrong when updating element");
   }
 };

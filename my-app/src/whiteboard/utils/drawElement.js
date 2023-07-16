@@ -12,14 +12,14 @@ const drawPencilElement = (context, element) => {
   const myPath = new Path2D(pathData);
   context.fill(myPath);
 };
-function drawTextElement(context, element) {
-  context.textBaseline = 'top';
-  context.font = '24px sans-serif';
-  context.fillText(element.text,element.x1, element.y1);
-}
+
+const drawTextElement = (context, element) => {
+  context.textBaseline = "top";
+  context.font = "24px sans-serif";
+  context.fillText(element.text, element.x1, element.y1);
+};
+
 export const drawElement = ({ roughCanvas, context, element }) => {
-
-
   switch (element.type) {
     case toolTypes.RECTANGLE:
     case toolTypes.LINE:
